@@ -1,0 +1,25 @@
+{ns aidbox.patient-track
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Patient track"
+  :steps
+  {:clean
+   {:desc "Clear all patients"
+    :method :post
+    :uri "/$sql"
+    :body "TRUNCATE patient"
+    :response {:status 200}}
+
+   :create
+   {:desc  "Create number of patients"
+    :method :post
+    :uri "/Patient"
+    :body [{:resourceType "Patient"}]
+    :response {:status 201
+               :body {:meta {:lastUpdated sty/string?
+                             :versionId sty/string?}}}}}
+  }
+
+ }
