@@ -5,7 +5,8 @@
  {:zen/tags #{sty/case}
   :title "Test case"
   :steps
-  {:clean
+  {
+   :clean
    {:desc "Clear all patients"
     :method :post
     :uri "/$sql"

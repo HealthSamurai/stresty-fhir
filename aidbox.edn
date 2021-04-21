@@ -1,12 +1,16 @@
 {ns aidbox
  import #{sty
           aidbox.simple-search
-          aidbox.patient-track
-          }
+          aidbox.patient-track}
 
  aidbox
  {:zen/tags #{sty/suite}
   :base-url "https://edgeniquola.edge.aidbox.app"
+  :basic-auth {:user "basic" :password "secret"}}
+
+ local
+ {:zen/tags #{sty/suite}
+  :base-url "http://localhost:8080"
   :basic-auth {:user "basic" :password "secret"}}
 
 
