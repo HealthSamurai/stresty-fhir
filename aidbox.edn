@@ -1,6 +1,6 @@
 {ns aidbox
  import #{sty
-          ;; aidbox.simple-search
+          aidbox.simple-search
           aidbox.patient-track}
 
  aidbox
