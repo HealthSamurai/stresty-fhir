@@ -5,33 +5,29 @@
  {:zen/tags #{sty/case}
   :title "Patient track"
   :steps
-  {:clean
-   {:desc "Clear all patients"
-    :ups "xxx"
-    :method :post
-    :uri "/$sql"
-    :body "TRUNCATE patient"
-    :response {:status 200}}
-
+  {
    :create
    {:desc  "create"
     :method :post
     :uri "/Patient"
-    :body [{:resourceType "Patient"}]
+    :body {:resourceType "Patient"}
     :response {:status 201
                :body {:meta {:lastUpdated sty/string?
                              :versionId sty/string?}}}}
-   ;; :read
-   ;; {:desc  "read"
-   ;;  :method :get
-   ;;  ;; "/Patient/{{create.body.id}}"
-   ;;  :uri (str "/Patient/" (sty/get :create :body :id))
-   ;;  :body [{:resourceType "Patient"}]
-   ;;  :response {:status sty/ok?
-   ;;             :body {:id #"\d+"
-   ;;                    :meta {:lastUpdated sty/string?
-   ;;                           :versionId sty/string?}}}}
+   :read
+   {:desc  "read"
+    :method :get
+    :uri (str "/Patient/" (get-in sty/state [:create :body :id]))
+    :response {:status sty/ok?
+               :body {:id (get-in sty/state [:create :body :id])
+                      :meta {:lastUpdated sty/string?
+                             :versionId sty/string?}}}}
+   :read-2
+   {:desc  "wrong read"
+    :method :get
+    :uri (str "/Patient/" (get-in sty/state [:create :body :id]))
+    :response {:status sty/ok?
+               :body {:id (str "UPS-" (get-in sty/state [:create :body :id]))}}}
    }
   }
-
  }
