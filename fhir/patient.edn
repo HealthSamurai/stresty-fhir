@@ -1,0 +1,119 @@
+{ns aidbox.patient
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Patient test case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}},
+    
+
+   
+   {:desc  "Create a two patients for test"
+    :do {:act sty/http :method :put :url "/"
+         :body [{:resourceType "Patient" 
+            :id "pt-1" 
+            :name [{:text "John"}] 
+            :birthDate "1980-10-10"
+            :gender "male"
+            :managingOrganization {:id "org-1" :resourceType "Organization"}
+           },
+           {:resourceType "Patient" 
+            :id "pt-2" 
+            :name [{:text "Sarah"}] 
+            :birthDate "2010-01-01"
+            :gender "female"
+            :managingOrganization {:id "org-2" :resourceType "Organization"}}]
+           }
+    :match {:by sty/matcho :status 200 
+    	       :body [{:id "pt-1"},
+                   {:id "pt-2"}]}}
+
+
+    {:id :read
+     :desc  "Read patients"
+     :do {:act sty/http
+          :method :get
+          :url (str "/Patient/" (get-in sty/state [:create :body :id]))}
+     :match {:by sty/matcho
+             :status sty/ok?
+             :body {:id (get-in sty/state [:create :body :id])
+                    :meta {:lastUpdated sty/string?
+                           :versionId sty/string?}}}}
+
+    {:id :read-patient
+     :desc  "Read patient"
+     :do {:act sty/http
+          :method :get
+          :url (str "/Patient/pt-1")}
+     :match {:by sty/matcho
+             :status sty/ok?
+             :body {:id "pt-1"
+                    :meta {:lastUpdated sty/string?
+                           :versionId sty/string?}}}}
+
+
+    {:desc  "Try to create a patient with the existing id"
+     :do {:act sty/http :method :put :url "/"
+          :body {:resourceType "Patient" 
+                  :id "pt-1" 
+                  :name [{:text "John"}] 
+                  :birthDate "1980-10-10"
+                  :gender "male"
+                  :managingOrganization {:id "org-1" :resourceType "Organization"}
+                 }}
+     :match {:by sty/matcho :status 200 }}
+
+
+    {:desc  "Update previously created patient"
+     :do {:act sty/http :method :patch
+          :url "/Patient/pt-1"
+          :body {:birthDate "1970-01-01"}}
+     :match {:by sty/matcho :status 200 
+    	        :body {:id "pt-1" :birthDate "1970-01-01"}}}
+
+
+    	{:desc  "Get patient history"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-1/_history"
+          }
+      :match {:by sty/matcho :status 200 
+    	         :body {:type "history" :total 6}}}
+
+
+     {:desc  "Search a patient by name"
+   	  :do {:act sty/http :method :get
+           :url "/Patient?name=John"
+          }
+      :match {:by sty/matcho 
+      	       :status 200 
+              :body {:id "pt-1"}}}
+
+
+     {:desc  "Search a patient by age and gender"
+   	  :do {:act sty/http :method :get
+           :url "/Patient?gender=female&birthdate=ge2010-01-01"
+          }
+      :match {:by sty/matcho 
+      	       :status 200 
+              :body {:id "pt-2"}}}
+
+
+
+     {:desc  "Delete created patient"
+   	  :do {:act sty/http :method :delete
+           :url "/Patient/pt-1"
+          }
+      :match {:by sty/matcho 
+      	       :status 200 
+              }}
+
+
+     ]
+
+}}
+
+
