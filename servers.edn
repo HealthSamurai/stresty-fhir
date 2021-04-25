@@ -1,10 +1,8 @@
 {ns aidbox
- import #{sty
-          aidbox.simple-search
-          aidbox.patient-track}
+ import #{sty fhir.patient-track fhir.simple-search}
 
  aidbox
- {:zen/tags #{sty/suite}
+ {:zen/tags #{sty/env}
   :base-url "https://edgeniquola.edge.aidbox.app"
   :basic-auth {:user "basic" :password "secret"}}
 
