@@ -19,14 +19,15 @@
             :name [{:text "John"}] 
             :birthDate "1980-10-10"
             :gender "male"
-            :managingOrganization {:id "org-1" :resourceType "Organization"}
+            :meta {:versionId "999"}
            },
            {:resourceType "Patient" 
             :id "pt-2" 
             :name [{:text "Sarah"}] 
             :birthDate "2010-01-01"
             :gender "female"
-            :managingOrganization {:id "org-2" :resourceType "Organization"}}]
+            :meta {:versionId "1000"}
+            }]
            }
     :match {:by sty/matcho :status sty/ok?
     	       :body [{:id "pt-1"},
@@ -51,8 +52,30 @@
      :match {:by sty/matcho
              :status sty/ok?
              :body {:id "pt-1"
+                    :resourceType "Patient"
                     :meta {:lastUpdated sty/string?
                            :versionId sty/string?}}}}
+
+
+     {:id :check-if-the-patient-resource-modified
+     :desc  "Check if the patient resource is modified"
+     :do {:act sty/http
+          :method :get
+          :If-None-Match "999"
+          :url (str "/Patient/pt-1?_etag=999")}
+     :match {:by sty/matcho
+             :status 304
+             }}
+
+
+    {:id :read-non-existing-patient
+     :desc  "Try to read non-existing patient"
+     :do {:act sty/http
+          :method :get
+          :url (str "/Patient/pt-3")}
+     :match {:by sty/matcho
+             :status 404
+             }}
 
 
     {:desc  "Try to create a patient with the existing id"
@@ -67,12 +90,36 @@
      :match {:by sty/matcho :status 500 }}
 
 
+
     {:desc  "Update previously created patient"
-     :do {:act sty/http :method :patch
+     :do {:act sty/http :method :put
           :url "/Patient/pt-1"
-          :body {:birthDate "1970-01-01"}}
+          :body {
+                 :name [{:text "Johnny"}] 
+                 :birthDate "1970-10-10"
+                 :gender "male"}
      :match {:by sty/matcho :status sty/ok?
-    	        :body {:id "pt-1" :birthDate "1970-01-01"}}}
+    	        :body {:id "pt-1" :birthDate "1970-01-01"}}}}
+
+
+    {:desc  "Update as create"
+     :do {:act sty/http :method :put
+          :url "/Patient"
+          :body {
+                 :name [{:text "Denny"}] 
+                 :birthDate "2015-10-10"
+                 :gender "female"}
+     :match {:by sty/matcho :status sty/ok?
+    	        :body {:resourceType "Patient"}}}}
+     
+
+    {:desc  "Not sucessfull update previously created patient"
+     :do {:act sty/http :method :update
+          :url "/Patient/pt-1"
+          :If-Match "1212"
+          :body { :birthDate "1970-01-05"}}
+     :match {:by sty/matcho :status 409
+    	        }}
 
 
     	{:desc  "Get patient history"
@@ -91,6 +138,15 @@
       :match {:by sty/matcho :status sty/ok? 
     	         :body {:id "pt-1"
     	         	      :meta { :versionId "999"} }}}
+
+
+    	{:desc  "Try to read non-existing version of non-existing patient resource"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-3/_history/1"
+          }
+      :match {:by sty/matcho 
+      	       :status 404 
+    	         }}
 
 
      {:desc  "Search a patient by name"
@@ -120,6 +176,41 @@
       	       :status sty/ok? 
               }}
 
+
+     {:desc  "Try to read just deleted  patient"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-1"
+          }
+      :match {:by sty/matcho 
+      	       :status 410 
+    	         }}
+
+     
+     {:desc  "Get history for just deleted  patient"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-1/_history"
+          }
+      :match {:by sty/matcho 
+      	       :status 200 
+    	         :body {:entry [{:request {:method "DELETE"}, :resource {:resourceType "Patient"}}]}}}
+
+
+    	{:desc  "Not successfull conditional delete for patient"
+   	  :do {:act sty/http :method :delete
+           :url "/Patient/?birthdate=1990-01-11"
+          }
+      :match {:by sty/matcho 
+      	       :status 204 
+              }}
+
+
+      {:desc  "Successfull conditional delete for patient"
+   	  :do {:act sty/http :method :delete
+           :url "/Patient/?birthdate=2010-01-01"
+          }
+      :match {:by sty/matcho 
+      	       :status 200 
+              }}
 
      ]
 
