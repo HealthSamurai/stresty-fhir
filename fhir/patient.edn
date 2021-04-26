@@ -1,4 +1,4 @@
-{ns aidbox.patient
+{ns fhir.patient
  import #{sty}
 
  case
@@ -28,7 +28,7 @@
             :gender "female"
             :managingOrganization {:id "org-2" :resourceType "Organization"}}]
            }
-    :match {:by sty/matcho :status 200 
+    :match {:by sty/matcho :status sty/ok?
     	       :body [{:id "pt-1"},
                    {:id "pt-2"}]}}
 
@@ -41,8 +41,7 @@
      :match {:by sty/matcho
              :status sty/ok?
              :body {:id (get-in sty/state [:create :body :id])
-                    :meta {:lastUpdated sty/string?
-                           :versionId sty/string?}}}}
+                    :meta {:versionId sty/string?}}}}
 
     {:id :read-patient
      :desc  "Read patient"
@@ -65,14 +64,14 @@
                   :gender "male"
                   :managingOrganization {:id "org-1" :resourceType "Organization"}
                  }}
-     :match {:by sty/matcho :status 200 }}
+     :match {:by sty/matcho :status 500 }}
 
 
     {:desc  "Update previously created patient"
      :do {:act sty/http :method :patch
           :url "/Patient/pt-1"
           :body {:birthDate "1970-01-01"}}
-     :match {:by sty/matcho :status 200 
+     :match {:by sty/matcho :status sty/ok?
     	        :body {:id "pt-1" :birthDate "1970-01-01"}}}
 
 
@@ -80,8 +79,18 @@
       :do {:act sty/http :method :get
            :url "/Patient/pt-1/_history"
           }
-      :match {:by sty/matcho :status 200 
-    	         :body {:type "history" :total 6}}}
+      :match {:by sty/matcho :status sty/ok? 
+    	         :body {:resourceType "Bundle"
+    	         	      :type "history" }}}
+
+
+    	{:desc  "Get particular version of the patient resource "
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-1/_history/999"
+          }
+      :match {:by sty/matcho :status sty/ok? 
+    	         :body {:id "pt-1"
+    	         	      :meta { :versionId "999"} }}}
 
 
      {:desc  "Search a patient by name"
@@ -89,8 +98,8 @@
            :url "/Patient?name=John"
           }
       :match {:by sty/matcho 
-      	       :status 200 
-              :body {:id "pt-1"}}}
+      	       :status sty/ok? 
+              :body {:entry [{:resource {:id "pt-1"}}]}}}
 
 
      {:desc  "Search a patient by age and gender"
@@ -98,8 +107,8 @@
            :url "/Patient?gender=female&birthdate=ge2010-01-01"
           }
       :match {:by sty/matcho 
-      	       :status 200 
-              :body {:id "pt-2"}}}
+      	       :status sty/ok? 
+              :body {:entry [{:resource {:id "pt-2"}}]}}}
 
 
 
@@ -108,7 +117,7 @@
            :url "/Patient/pt-1"
           }
       :match {:by sty/matcho 
-      	       :status 200 
+      	       :status sty/ok? 
               }}
 
 
