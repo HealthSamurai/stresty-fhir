@@ -1,0 +1,40 @@
+{ns fhir.basic-test
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Test case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}}
+
+   {:desc  "Create number of patients"
+    :do {:act sty/http
+         :method :put
+         :url "/"
+         :body [{:resourceType "Patient" :id "pt-1"}]}
+    :match {:by sty/matcho
+            :status 200
+            :body [{:id "pt-1"}]}}
+
+   
+   {:id :find
+    :do {:act sty/http
+         :method :get
+         :url "/Patient/pt-1"}
+    :match {:by sty/matcho
+            :status 200 :body {:id sty/string?}}}
+
+
+   {:id :search
+    :do {:act sty/http
+         :method :get
+         :url "/Patient?name=ups"}
+    :match {:by sty/matcho
+            :status 200
+            :body {:entry [{:resource {:id "pt-1"}}]}}}
+
+
+   ]}}

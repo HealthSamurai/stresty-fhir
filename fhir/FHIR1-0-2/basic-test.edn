@@ -1,4 +1,4 @@
-{ns fhir.simple-search
+{ns fhir.basic-test
  import #{sty}
 
  case
