@@ -12,6 +12,35 @@ The collection is organized by FHIR versions and well-known FHIR scenarios.
 
 ## Installation & Configuration
 
+- Download the latest version of Stresty utility here https://github.com/HealthSamurai/stresty/releases/ 
+
+MAC OS
+
+Add sty to $PATH
+
+```
+mkdir bin
+cp {you sty file location}\sty bin
+cd bin
+export PATH=`pwd`:$PATH
+```
+
+In your terminal make sty utility executable by executing
+
+```
+chmod -x sty
+```
+
+Generating the new project
+
+```
+sty gen —project=my.namespace
+```
+
+Linux
+
+
+
 ## Writing tests
 
 ```
