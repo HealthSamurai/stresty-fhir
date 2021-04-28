@@ -31,11 +31,17 @@ In your terminal make sty utility executable by executing
 chmod -x sty
 ```
 
+
 Generating the new project
 
 ```
 sty gen —project=my.namespace
 ```
+
+Disabling the built-in MAC OS security for unknown app publishers.
+Open System Preferencies -> Security&Privacy -> Allow apps downloaded from -> "Allow anyway"
+
+
 
 Linux
 
