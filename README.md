@@ -7,14 +7,13 @@ The collection is organized by FHIR versions and well-known FHIR scenarios.
 ## Requirements
 
 - Install Stresty utility into your local environment
-- Have some text editor supporting edn syntax (Try Sublime for example)
-- 
+- Have some text editor supporting edn syntax (Try Sublime (https://www.sublimetext.com/)  for example)
 
 ## Installation & Configuration
 
 - Download the latest version of Stresty utility here https://github.com/HealthSamurai/stresty/releases/ 
 
-MAC OS
+MAC OS / Linux environment
 
 Add sty to $PATH
 
@@ -38,12 +37,10 @@ Generating the new project
 sty gen —project=my.namespace
 ```
 
-Disabling the built-in MAC OS security for unknown app publishers.
-Open System Preferencies -> Security&Privacy -> Allow apps downloaded from -> "Allow anyway"
+MAC OS
 
+Follow this instruction to handle System restrictions for the apps from unidentified developers: https://www.macworld.co.uk/how-to/mac-app-unidentified-developer-3669596/#:~:text=Open%20System%20Preferences.,developers'%20from%20just%20App%20Store. 
 
-
-Linux
 
 
 
