@@ -120,6 +120,11 @@ mytest.edn
  }
 ```
 
+
+## List of supported options for test case 
+
+https://github.com/HealthSamurai/stresty/blob/master/src/sty.edn 
+
 ## Run tests
 
 ```
