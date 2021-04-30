@@ -34,7 +34,7 @@ chmod -x sty
 Generating the new project
 
 ```
-sty gen —project=my.namespace
+sty gen --project=mytest   //mytest - is a name of the namespace
 ```
 
 MAC OS
