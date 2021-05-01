@@ -37,7 +37,7 @@ jobs:
         run:  mkdir output
 
       - name: Test stresty
-        run:  ./sty --format=report --ns=aidbox tests
+        run:  ./sty --format=report --ns=servers tests
 
       - name: Deploy to GitHub Pages
         if: success()
