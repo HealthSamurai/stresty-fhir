@@ -37,7 +37,7 @@ jobs:
         run:  echo 'hello'
 
       - name: Test stresty
-        run:  ./sty
+        run:  ./sty --format=report --ns=aidbox tests
 
       - name: Deploy to GitHub Pages
         if: success()
