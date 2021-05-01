@@ -26,6 +26,9 @@ jobs:
           AIDBOX_ADMIN_ID: admin
           AIDBOX_ADMIN_PASSWORD: secret
           AIDBOX_FHIR_VERSION: 4.0.0
+          AIDBOX_LICENSE_ID:  ${{ secrets.LID }}
+          AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
