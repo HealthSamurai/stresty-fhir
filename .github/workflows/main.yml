@@ -8,6 +8,8 @@ jobs:
     services:
       pg:
         image: healthsamurai/aidboxdb:13.2
+        ports:
+          - 5432:5432
         env:
           PGPORT: 5432
           PGUSER: postgres
@@ -22,6 +24,8 @@ jobs:
 
       devbox:
         image: healthsamurai/devbox:stable
+        ports:
+          - 8080:8080
         env:
           PGHOST: pg
           PGPORT: 5432
