@@ -90,51 +90,46 @@ If you would like to easily run the tests on your local instance of the FHIR ser
 mytest.edn
 
 ``` edn
-{ns mytest
- import #{sty}
+{ns mytest.case
+import #{sty}
 
- env
- {:zen/tags #{sty/env}
-  :base-url "https://edgeniquola.edge.aidbox.app"
-  :basic-auth {:user "???" :password "???"}}
-
- case
+case
  {:zen/tags #{sty/case}
-  :title "Patient track"
-  :steps
-  [{:id :create
-    :desc  "create"
-    :do {:act sty/http
-         :method :post
-         :url "/Patient"
-         :body {:resourceType "Patient"}}
-    :match {:by sty/matcho
-            :status 201
-            :body {:meta {:lastUpdated sty/string?
-                          :versionId sty/string?}}}}
+  :steps [
+  {:id :first-step
+   :desc "Crate Patient"
+   :do {:act sty/http 
+        :method :post
+        :url "/Patient"
+        :body {:resourceType "Patient"
+               :name [{:family "Doe", :given ["John"]}]}}
+   :match {:by sty/matcho
+           :status sty/ok?
+           :body {:id sty/string?}}}
 
-   {:id :read
-    :desc  "read"
-    :do {:act sty/http
-         :method :get
-         :url (str "/Patient/" (get-in sty/state [:create :body :id]))}
-    :match {:by sty/matcho
-            :status sty/ok?
-            :body {:id (get-in sty/state [:create :body :id])
-                   :meta {:lastUpdated sty/string?
-                          :versionId sty/string?}}}}
+  {:id :second-step
+   :do {:act sty/print
+        :path [:first-step :body]}}
 
-   {:id :read-2
-    :desc  "wrong read"
-    :do {:act sty/http
-         :method :get
-         :url (str "/Patient/" (get-in sty/state [:create :body :id]))}
-    :match {:by sty/matcho
-            :status sty/ok?
-            :body {:id (str "UPS-" (get-in sty/state [:create :body :id]))}}}
-   ]
-  }
- }
+  {:id :third-step
+   :do {:act sty/http 
+        :method :get
+        :url (str "/Patient/" (get-in sty/state [:first-step :body :id]))}
+   :match {:by sty/matcho
+           :status sty/ok?
+           :body {:name (get-in sty/state [:first-step :body :name])}}}
+
+
+  {:id :fourth-step
+   :do {:act sty/http 
+        :method :get
+        :url (str "/Patient/" (get-in sty/state [:first-step :body :id]))}
+   :match {:by sty/matcho
+           :status sty/ok?
+           :body {:name [{:family sty/any?}]}}}
+
+  ;; add more steps
+  ]}}
 ```
 
 
