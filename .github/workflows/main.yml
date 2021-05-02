@@ -40,7 +40,7 @@ jobs:
           #AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
           AIDBOX_LICENSE_KEY: 55c2694c49e345dd83686bf8955cd968
         options: >-
-          --health-cmd "--health-cmd='curl -sS 127.0.0.1:8080'"
+          --health-cmd 'curl -sS 127.0.0.1:8080'
           --health-interval 30s
           --health-timeout 10s
           --health-retries 20
