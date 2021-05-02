@@ -26,6 +26,7 @@ jobs:
           PGHOST: pg
           PGPORT: 5432
           PGUSER: postgres
+          AIDBOX_PORT: 8080
           POSTGRES_USER: postgres
           PGPASSWORD: postgres
           PGDATABASE: devbox
