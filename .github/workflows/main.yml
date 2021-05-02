@@ -6,19 +6,30 @@ jobs:
   stresty:
     runs-on: ubuntu-latest
     services:
-      pg:
-        image: healthsamurai/aidboxdb:13.2
+      postgres:
+        image: postgres
         env:
-          PGPORT: 5432
-          PGUSER: postgres
-          PGPASSWORD: postgres
-          PGDATABASE: devbox
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 10
-          --health-start-period 30s
+          --health-retries 5
+
+      # pg:
+      #   image: healthsamurai/aidboxdb:13.2
+      #   env:
+      #     PGPORT: 5432
+      #     PGUSER: postgres
+      #     PGPASSWORD: postgres
+      #     PGDATABASE: devbox
+      #   options: >-
+      #     --health-cmd pg_isready
+      #     --health-interval 10s
+      #     --health-timeout 5s
+      #     --health-retries 10
+      #     --health-start-period 30s
+
       # devbox:
       #   image: healthsamurai/devbox:stable
       #   env:
