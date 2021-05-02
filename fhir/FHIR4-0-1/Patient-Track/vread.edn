@@ -1,0 +1,63 @@
+{ns fhir.FHIR4-0-1.Patient-Track.patient
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Patient vread test case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}},
+    
+
+   
+   {:id :create-patient
+   	:desc  "Create a patient for test"
+    :do {:act sty/http 
+    	    :method :post 
+    	    :url "/Patient"
+         :body {:resourceType "Patient" 
+                :id "pt-1" 
+                :name [{:text "John"}] 
+                :birthDate "1980-10-10"
+                :gender "male"
+                }
+           }
+    :match {:by sty/matcho :status sty/ok?
+    	       :body {:id "pt-1"
+    	       	      :meta {:lastUpdated sty/string?
+                          :versionId sty/string?}}
+                   }}
+
+
+    {:id :get-patient-history
+    	:desc  "Get patient history"
+     :do {:act sty/http :method :get
+          :url "/Patient/pt-1/_history"
+          }
+     :match {:by sty/matcho :status sty/ok?
+   	         :body {:resourceType "Bundle"
+   	         	      :type "history" }}}
+
+
+    {:id :get-patient-existing-version
+    	:desc  "Get particular version of the patient resource "
+      :do {:act sty/http :method :get
+           :url (str "/Patient/pt-1/_history/" (get-in sty/state [:create-patient :body :meta :versionId]))
+          }
+      :match {:by sty/matcho :status sty/ok?
+    	         :body {:resourceType "Patient"
+    	         	      :meta {:versionId (get-in sty/state [:create-patient :body :meta :versionId])}
+    	         	      }}}
+
+
+    	{:desc  "Try to read non-existing version of non-existing patient resource"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-3/_history/1"
+          }
+      :match {:by sty/matcho
+      	       :status 404
+    	         }}
+
+]}}
