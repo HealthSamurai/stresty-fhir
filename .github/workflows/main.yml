@@ -37,7 +37,7 @@ jobs:
         run:  mkdir output
 
       - name: Get stresty
-        run: curl -L https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-macOS-latest.zip --output sty.zip
+        run: curl -L https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-ubuntu-latest.zip --output sty.zip
 
       - name: Unzip stresty
         run: 7z x sty.zip
