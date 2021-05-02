@@ -36,19 +36,14 @@ jobs:
           AIDBOX_FHIR_VERSION: 4.0.0
           AIDBOX_LICENSE_ID:  ${{ secrets.LID }}
           AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
+        options: >-
+          --health-cmd "--health-cmd='curl -sS 127.0.0.1:8080'"
+          --health-interval 30s
+          --health-timeout 10s
+          --health-retries 20
+          --health-start-period 30s
 
     steps:
-      - name: Devbox health
-        uses: jtalk/url-health-check-action@v1.5
-        with:
-           url: http://devbox:8080/health
-           max-attempts: 10
-           retry-delay: 10s # Optional, only applicable to max-attempts > 1
-           retry-all: no # Optional, defaults to "no"
-
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Create output forlder
         run:  mkdir output
 
