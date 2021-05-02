@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
 
       - name: Get stresty
         run: curl -L https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-ubuntu-latest.zip --output sty.zip
@@ -15,7 +17,7 @@ jobs:
         run: 7z x sty.zip
 
       - name: Test stresty
-        run:  ./sty --path=./ --format=report --ns=servers test
+        run:  ./sty --format=report --ns=servers test
 
       - name: Deploy to GitHub Pages
         if: success()
