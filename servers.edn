@@ -6,8 +6,8 @@
   :base-url "https://edgeniquola.edge.aidbox.app"
   :basic-auth {:user "basic" :password "secret"}}
 
-  local
-  {:zen/tags #{sty/env}
+  #_local
+  #_{:zen/tags #{sty/env}
    :base-url "http://devbox:8080"
    :basic-auth {:user "root" :password "secret"}}
 
