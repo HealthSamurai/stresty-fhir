@@ -16,19 +16,19 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      # pg:
-      #   image: healthsamurai/aidboxdb:13.2
-      #   env:
-      #     PGPORT: 5432
-      #     PGUSER: postgres
-      #     PGPASSWORD: postgres
-      #     PGDATABASE: devbox
-      #   options: >-
-      #     --health-cmd pg_isready
-      #     --health-interval 10s
-      #     --health-timeout 5s
-      #     --health-retries 10
-      #     --health-start-period 30s
+      pg:
+        image: healthsamurai/aidboxdb:13.2
+        env:
+          PGPORT: 5432
+          PGUSER: postgres
+          POSTGRES_USER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: devbox
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
 
       # devbox:
       #   image: healthsamurai/devbox:stable
