@@ -55,7 +55,7 @@ jobs:
         run:  mkdir output
 
       - name: Test devbox
-        run: curl http://devbox:8080/Patient
+        run: curl http://locaclhost:8080/health
 
       - name: Get stresty
         run: curl -L https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-ubuntu-latest.zip --output sty.zip
