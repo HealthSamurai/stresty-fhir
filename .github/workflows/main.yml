@@ -19,27 +19,27 @@ jobs:
           --health-timeout 5s
           --health-retries 10
           --health-start-period 30s
-      devbox:
-        image: healthsamurai/devbox:stable
-        env:
-          PGHOST: pg
-          PGPORT: 5432
-          PGUSER: postgres
-          PGPASSWORD: postgres
-          PGDATABASE: devbox
-          AIDBOX_CLIENT_ID: root
-          AIDBOX_CLIENT_SECRET: secret
-          AIDBOX_ADMIN_ID: admin
-          AIDBOX_ADMIN_PASSWORD: secret
-          AIDBOX_FHIR_VERSION: 4.0.0
-          AIDBOX_LICENSE_ID:  ${{ secrets.LID }}
-          AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
-        options: >-
-          --health-cmd "curl -f http://devbox:8080/health"
-          --health-interval 30s
-          --health-timeout 10s
-          --health-retries 5
-          --health-start-period 30s
+      # devbox:
+      #   image: healthsamurai/devbox:stable
+      #   env:
+      #     PGHOST: pg
+      #     PGPORT: 5432
+      #     PGUSER: postgres
+      #     PGPASSWORD: postgres
+      #     PGDATABASE: devbox
+      #     AIDBOX_CLIENT_ID: root
+      #     AIDBOX_CLIENT_SECRET: secret
+      #     AIDBOX_ADMIN_ID: admin
+      #     AIDBOX_ADMIN_PASSWORD: secret
+      #     AIDBOX_FHIR_VERSION: 4.0.0
+      #     AIDBOX_LICENSE_ID:  ${{ secrets.LID }}
+      #     AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
+      #   options: >-
+      #     --health-cmd "curl -f http://localhost:8080/health"
+      #     --health-interval 30s
+      #     --health-timeout 10s
+      #     --health-retries 5
+      #     --health-start-period 30s
 
     steps:
       - name: Checkout
