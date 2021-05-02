@@ -26,6 +26,7 @@ jobs:
           PGHOST: pg
           PGPORT: 5432
           PGUSER: postgres
+          POSTGRES_USER: postgres
           PGPASSWORD: postgres
           PGDATABASE: devbox
           AIDBOX_CLIENT_ID: root
@@ -39,7 +40,7 @@ jobs:
           --health-cmd "curl -f http://localhost:8080/health"
           --health-interval 30s
           --health-timeout 10s
-          --health-retries 5
+          --health-retries 20
           --health-start-period 30s
 
     steps:
