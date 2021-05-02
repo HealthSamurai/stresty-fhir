@@ -1,15 +1,15 @@
-{ns aidbox
- import #{sty fhir.patient-track fhir.simple-search}
+{ns servers
+ import #{sty fhir.patient-track fhir.patient}
 
  aidbox
  {:zen/tags #{sty/env}
   :base-url "https://edgeniquola.edge.aidbox.app"
   :basic-auth {:user "basic" :password "secret"}}
 
- ;; local
- ;; {:zen/tags #{sty/suite}
- ;;  :base-url "http://localhost:8080"
- ;;  :basic-auth {:user "basic" :password "secret"}}
+  local
+  {:zen/tags #{sty/env}
+   :base-url "http://devbox:8080"
+   :basic-auth {:user "root" :password "secret"}}
 
 
  }

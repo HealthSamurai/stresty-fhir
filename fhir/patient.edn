@@ -9,21 +9,20 @@
     :do {:act sty/http :method :post :url "/$sql"
          :body "TRUNCATE patient"}
     :match {:by sty/matcho :status 200}},
-    
 
-   
+
    {:desc  "Create a two patients for test"
     :do {:act sty/http :method :put :url "/"
-         :body [{:resourceType "Patient" 
-            :id "pt-1" 
-            :name [{:text "John"}] 
+         :body [{:resourceType "Patient"
+            :id "pt-1"
+            :name [{:text "John"}]
             :birthDate "1980-10-10"
             :gender "male"
             :meta {:versionId "999"}
            },
-           {:resourceType "Patient" 
-            :id "pt-2" 
-            :name [{:text "Sarah"}] 
+           {:resourceType "Patient"
+            :id "pt-2"
+            :name [{:text "Sarah"}]
             :birthDate "2010-01-01"
             :gender "female"
             :meta {:versionId "1000"}
@@ -80,9 +79,9 @@
 
     {:desc  "Try to create a patient with the existing id"
      :do {:act sty/http :method :put :url "/"
-          :body {:resourceType "Patient" 
-                  :id "pt-1" 
-                  :name [{:text "John"}] 
+          :body {:resourceType "Patient"
+                  :id "pt-1"
+                  :name [{:text "John"}]
                   :birthDate "1980-10-10"
                   :gender "male"
                   :managingOrganization {:id "org-1" :resourceType "Organization"}
@@ -95,7 +94,7 @@
      :do {:act sty/http :method :put
           :url "/Patient/pt-1"
           :body {
-                 :name [{:text "Johnny"}] 
+                 :name [{:text "Johnny"}]
                  :birthDate "1970-10-10"
                  :gender "male"}
      :match {:by sty/matcho :status sty/ok?
@@ -106,12 +105,12 @@
      :do {:act sty/http :method :put
           :url "/Patient"
           :body {
-                 :name [{:text "Denny"}] 
+                 :name [{:text "Denny"}]
                  :birthDate "2015-10-10"
                  :gender "female"}
      :match {:by sty/matcho :status sty/ok?
     	        :body {:resourceType "Patient"}}}}
-     
+
 
     {:desc  "Not sucessfull update previously created patient"
      :do {:act sty/http :method :update
@@ -126,7 +125,7 @@
       :do {:act sty/http :method :get
            :url "/Patient/pt-1/_history"
           }
-      :match {:by sty/matcho :status sty/ok? 
+      :match {:by sty/matcho :status sty/ok?
     	         :body {:resourceType "Bundle"
     	         	      :type "history" }}}
 
@@ -135,7 +134,7 @@
       :do {:act sty/http :method :get
            :url "/Patient/pt-1/_history/999"
           }
-      :match {:by sty/matcho :status sty/ok? 
+      :match {:by sty/matcho :status sty/ok?
     	         :body {:id "pt-1"
     	         	      :meta { :versionId "999"} }}}
 
@@ -144,8 +143,8 @@
       :do {:act sty/http :method :get
            :url "/Patient/pt-3/_history/1"
           }
-      :match {:by sty/matcho 
-      	       :status 404 
+      :match {:by sty/matcho
+      	       :status 404
     	         }}
 
 
@@ -153,8 +152,8 @@
    	  :do {:act sty/http :method :get
            :url "/Patient?name=John"
           }
-      :match {:by sty/matcho 
-      	       :status sty/ok? 
+      :match {:by sty/matcho
+      	       :status sty/ok?
               :body {:entry [{:resource {:id "pt-1"}}]}}}
 
 
@@ -162,8 +161,8 @@
    	  :do {:act sty/http :method :get
            :url "/Patient?gender=female&birthdate=ge2010-01-01"
           }
-      :match {:by sty/matcho 
-      	       :status sty/ok? 
+      :match {:by sty/matcho
+      	       :status sty/ok?
               :body {:entry [{:resource {:id "pt-2"}}]}}}
 
 
@@ -172,8 +171,8 @@
    	  :do {:act sty/http :method :delete
            :url "/Patient/pt-1"
           }
-      :match {:by sty/matcho 
-      	       :status sty/ok? 
+      :match {:by sty/matcho
+      	       :status sty/ok?
               }}
 
 
@@ -181,17 +180,17 @@
       :do {:act sty/http :method :get
            :url "/Patient/pt-1"
           }
-      :match {:by sty/matcho 
-      	       :status 410 
+      :match {:by sty/matcho
+      	       :status 410
     	         }}
 
-     
+
      {:desc  "Get history for just deleted  patient"
       :do {:act sty/http :method :get
            :url "/Patient/pt-1/_history"
           }
-      :match {:by sty/matcho 
-      	       :status 200 
+      :match {:by sty/matcho
+      	       :status 200
     	         :body {:entry [{:request {:method "DELETE"}, :resource {:resourceType "Patient"}}]}}}
 
 
@@ -199,8 +198,8 @@
    	  :do {:act sty/http :method :delete
            :url "/Patient/?birthdate=1990-01-11"
           }
-      :match {:by sty/matcho 
-      	       :status 204 
+      :match {:by sty/matcho
+      	       :status 204
               }}
 
 
@@ -208,12 +207,10 @@
    	  :do {:act sty/http :method :delete
            :url "/Patient/?birthdate=2010-01-01"
           }
-      :match {:by sty/matcho 
-      	       :status 200 
+      :match {:by sty/matcho
+      	       :status 200
               }}
 
      ]
 
 }}
-
-

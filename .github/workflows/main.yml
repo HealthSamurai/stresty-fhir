@@ -1,0 +1,58 @@
+name: Stresty FHIR
+
+on: [push]
+
+jobs:
+  stresty:
+    runs-on: ubuntu-latest
+    services:
+      pg:
+        image: healthsamurai/aidboxdb:13.2
+        env:
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: devbox
+      devbox:
+        image: healthsamurai/devbox:stable
+        env:
+          PGHOST: pg
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: devbox
+          AIDBOX_CLIENT_ID: root
+          AIDBOX_CLIENT_SECRET: secret
+          AIDBOX_ADMIN_ID: admin
+          AIDBOX_ADMIN_PASSWORD: secret
+          AIDBOX_FHIR_VERSION: 4.0.0
+          AIDBOX_LICENSE_ID:  ${{ secrets.LID }}
+          AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Create output forlder
+        run:  mkdir output
+
+      # - name: Test devbox
+      #   run: curl http://devbox:8080/Patient
+
+      - name: Get stresty
+        run: curl -L https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-ubuntu-latest.zip --output sty.zip
+
+      - name: Unzip stresty
+        run: 7z x sty.zip
+
+      - name: Test stresty
+        run:  ./sty --format=report --ns=servers tests
+
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: output
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
