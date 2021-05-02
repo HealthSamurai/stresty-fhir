@@ -60,19 +60,32 @@ sty watch --paths=PATH1,PATH2
 sty (help) => help
 ```
 
-## Create new namespace for test cases
+## Working with environments for running test cases
 
-Create new .edn file or add some additional workspaces to servers.edn
+New generated project contains envs.edn file which specifies a list of FHIR servers to run your tests
+
+The envs file structure is
 
 ``` edn
-{ns fhirserver                  //the namespace name
- import #{sty fhir.mytest} // the list of test suits
+ns envs               //the environment name
+ import #{
+   sty
+   mytest.case        // the list of test suits
+ }
 
- fhirserver                    // FHIR server title and connection settings
- {:zen/tags #{sty/env}
-  :base-url "https://edgeniquola.edge.aidbox.app"
-  :basic-auth {:user "basic" :password "secret"}}
+ env {               // FHIR server title and connection settings
+  :zen/tags #{sty/env}
+  :base-url "???"
+  :basic-auth {:user "???" :password "???"}
+ }
+
+}
 ```
+
+If you would like to easily run the tests on your local instance of the FHIR server, you can just install Devbox as described here (https://docs.aidbox.app/getting-started/installation/setup-aidbox.dev)
+
+
+## Writing test cases
 
 mytest.edn
 
@@ -125,13 +138,25 @@ mytest.edn
 ```
 
 
-## List of supported options for test case
+Supported predicates for a test case
 
-https://github.com/HealthSamurai/stresty/blob/master/src/sty.edn
-
-## Run tests
 
 ```
-> sty --ns=mytest tests
+string? 
+
+number? 
+
+integer? 
+
+ok? 
+
+any? 
+
+```
+
+## Runing tests
+
+```
+sty --ns=envs tests
 
 ```
