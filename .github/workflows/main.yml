@@ -36,6 +36,9 @@ jobs:
       - name: Create output forlder
         run:  mkdir output
 
+      - name: Get stresty
+        run: curl https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-macOS-latest.zip
+
       - name: Test stresty
         run:  ./sty --format=report --ns=servers tests
 
