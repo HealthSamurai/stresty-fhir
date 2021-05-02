@@ -40,7 +40,7 @@ jobs:
         run: curl -L https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-macOS-latest.zip --output sty.zip
 
       - name: Unzip stresty
-        run: 7z -x sty.zip
+        run: 7z x sty.zip
 
       - name: Test stresty
         run:  ./sty --format=report --ns=servers tests
