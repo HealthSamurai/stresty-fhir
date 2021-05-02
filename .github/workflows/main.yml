@@ -28,6 +28,12 @@ jobs:
           AIDBOX_FHIR_VERSION: 4.0.0
           AIDBOX_LICENSE_ID:  ${{ secrets.LID }}
           AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
+        options: >-
+          --health-cmd "curl -f http://devbox:8080/health"
+          --health-interval 30s
+          --health-timeout 10s
+          --health-retries 5
+          --health-start-period 30s
 
     steps:
       - name: Checkout
@@ -36,8 +42,8 @@ jobs:
       - name: Create output forlder
         run:  mkdir output
 
-      # - name: Test devbox
-      #   run: curl http://devbox:8080/Patient
+      - name: Test devbox
+        run: curl http://devbox:8080/Patient
 
       - name: Get stresty
         run: curl -L https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-ubuntu-latest.zip --output sty.zip
