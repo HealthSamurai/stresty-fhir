@@ -22,40 +22,35 @@ jobs:
           --health-timeout 5s
           --health-retries 10
 
-      devbox:
-        image: healthsamurai/devbox:stable
-        ports:
-          - 8080:8080
-        env:
-          PGHOST: pg
-          PGPORT: 5432
-          PGUSER: postgres
-          AIDBOX_PORT: 8080
-          POSTGRES_USER: postgres
-          PGPASSWORD: postgres
-          PGDATABASE: devbox
-          AIDBOX_CLIENT_ID: root
-          AIDBOX_CLIENT_SECRET: secret
-          AIDBOX_ADMIN_ID: admin
-          AIDBOX_ADMIN_PASSWORD: secret
-          AIDBOX_FHIR_VERSION: 4.0.0
-          #AIDBOX_LICENSE_ID:  ${{ secrets.LID }}
-          AIDBOX_LICENSE_ID:  c90a305e6d5b474
-          #AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
-          AIDBOX_LICENSE_KEY:  55c2694c49e345dd83686bf8955cd968
-        options: >-
-          --health-cmd "exit 0"
-          --health-interval 30s
-          --health-timeout 10s
-          --health-retries 20
-          --health-start-period 30s
+      # devbox:
+      #   image: healthsamurai/devbox:stable
+      #   ports:
+      #     - 8080:8080
+      #   env:
+      #     PGHOST: pg
+      #     PGPORT: 5432
+      #     PGUSER: postgres
+      #     AIDBOX_PORT: 8080
+      #     POSTGRES_USER: postgres
+      #     PGPASSWORD: postgres
+      #     PGDATABASE: devbox
+      #     AIDBOX_CLIENT_ID: root
+      #     AIDBOX_CLIENT_SECRET: secret
+      #     AIDBOX_ADMIN_ID: admin
+      #     AIDBOX_ADMIN_PASSWORD: secret
+      #     AIDBOX_FHIR_VERSION: 4.0.0
+      #     #AIDBOX_LICENSE_ID:  ${{ secrets.LID }}
+      #     #AIDBOX_LICENSE_KEY: ${{ secrets.LKEY }}
+      #   options: >-
+      #     --health-cmd "exit 0"
+      #     --health-interval 30s
+      #     --health-timeout 10s
+      #     --health-retries 20
+      #     --health-start-period 30s
 
     steps:
       - name: Create output forlder
         run:  mkdir output
-
-      - name: Test devbox
-        run: curl http://locaclhost:8080/health
 
       - name: Get stresty
         run: curl -L https://github.com/HealthSamurai/stresty/releases/download/0.0.1-RC1/sty-ubuntu-latest.zip --output sty.zip
