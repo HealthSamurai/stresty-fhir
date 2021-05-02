@@ -1,0 +1,84 @@
+{ns fhir.FHIR4-0-1.Patient-Track.patient
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Patient test case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}},
+    
+
+   
+   {:id :create-patient
+   	:desc  "Create a patient for test"
+    :do {:act sty/http :method :put :url "/"
+         :body [{:resourceType "Patient" 
+            :id "pt-1" 
+            :name [{:text "John"}] 
+            :birthDate "1980-10-10"
+            :gender "male"
+           }]
+           }
+    :match {:by sty/matcho :status sty/ok?
+    	       :body [{:id "pt-1"}
+                   ]}}
+
+
+    {:id :read-patient
+     :desc  "Read patient"
+     :do {:act sty/http
+          :method :get
+          :url (str "/Patient/pt-1")}
+     :match {:by sty/matcho
+             :status sty/ok?
+             :body {:id "pt-1"
+                    :resourceType "Patient"
+                    :meta {:lastUpdated sty/string?
+                           :versionId sty/string?}}}}
+
+
+    {:id :read-patient-conditional-not-modified
+    :desc  "Checking if the version of just created read resource has not changed"
+    :do {:act sty/http
+         :method :get
+         :If-None-Match "1306"
+         :url (str "/Patient/pt-1?_etag=" (get-in sty/state [:create-patient :body :versionId]))}
+    :match {:by sty/matcho
+             :status 304
+             }}
+
+
+    {:id :read-patient-not-found
+     :desc  "Try to read not existing patient"
+     :do {:act sty/http
+          :method :get
+          :url (str "/Patient/pt-3")}
+     :match {:by sty/matcho
+             :status 404
+             }}
+
+
+     {:desc  "Delete created patient"
+   	  :do {:act sty/http :method :delete
+           :url "/Patient/pt-1"
+          }
+      :match {:by sty/matcho 
+      	       :status sty/ok? 
+              }}
+
+
+     {:desc  "Try to read just deleted  patient"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-1"
+          }
+      :match {:by sty/matcho 
+      	       :status 410 
+    	         }}
+
+]}}
+
+
+
