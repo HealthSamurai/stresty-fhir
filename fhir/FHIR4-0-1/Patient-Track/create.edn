@@ -1,0 +1,114 @@
+{ns fhir.FHIR4-0-1.Patient-Track.create
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Patient create test case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}},
+    
+
+   
+   {:id :create-patient
+   	:desc  "Create a patient for test"
+    :do {:act sty/http 
+    	    :method :post 
+    	    :url "/Patient"
+         :body {:resourceType "Patient" 
+                :id "pt-1" 
+                :name [{:text "John"}] 
+                :birthDate "1980-10-10"
+                :gender "male"
+                }
+           }
+    :match {:by sty/matcho :status sty/ok?
+    	       :body {:resourceType "Patient" 
+    	       	      :id "pt-1"
+    	       	      :meta {:lastUpdated sty/string?
+                          :versionId sty/string?}}
+                   }}
+
+
+     {:id :read-patient
+     :desc  "Search just created patient by id"
+     :do {:act sty/http
+          :method :get
+          :url (str "/Patient?id=pt-1")}
+     :match {:by sty/matcho
+             :status sty/ok?
+             :body {
+             :entry [{:resource {:id "pt-1"}}]
+             :total 1
+             }
+            }}
+
+
+     {:id :create-patient-not-successful
+   	 :desc  "Try to create wrong patient resource"
+     :do {:act sty/http 
+    	     :method :post 
+    	     :url "/Patient"
+          :body {:resourceType "Patient" 
+                 :type "bad resource"
+                 :name [{:text "John"}] 
+                 :birthDate "1980-10-10"
+                 :gender "male"
+                 }
+           }
+     :match {:by sty/matcho :status 422
+                   }}
+
+
+     {:id :create-patient-not-successful
+   	 :desc  "Try to create a patient with wrong birthday format"
+     :do {:act sty/http 
+    	     :method :post 
+    	     :url "/Patient"
+          :body {:resourceType "Patient" 
+                 :type "bad resource"
+                 :name [{:text "John"}] 
+                 :birthDate "1980-17-10"
+                 :gender "male"
+                 }
+           }
+      :match {:by sty/matcho :status 422
+                   }}
+
+      
+      {:id :create-patient-not-successful
+   	  :desc  "Try to create a patient with wrong resource type"
+      :do {:act sty/http 
+    	      :method :post 
+    	      :url "/Patient"
+           :body {:resourceType "Patient_" 
+                  :type "bad resource"
+                  :name [{:text "John"}] 
+                  :birthDate "1980-17-10"
+                  :gender "male"
+                 }
+           }
+       :match {:by sty/matcho :status 422
+                   }}
+
+
+       {:desc  "Try to create a patient with the existing id"
+        :do {:act sty/http :method :put :url "/"
+        :body {:resourceType "Patient"
+               :id "pt-1"
+               :name [{:text "John"}]
+               :birthDate "1980-10-10"
+               :gender "male"
+               :managingOrganization {:id "org-1" :resourceType "Organization"}
+              }}
+        :match {:by sty/matcho :status 500 }}
+
+     ]}}
+
+
+
+
+
+
