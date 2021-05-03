@@ -1,0 +1,79 @@
+{ns fhir.Patient-Track.update
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Patient update test case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}},
+    
+
+   
+   {:id :create-patient
+   	:desc  "Create a patient for test"
+    :do {:act sty/http 
+    	    :method :post 
+    	    :url "/Patient"
+         :body {:resourceType "Patient" 
+                :id "pt-1" 
+                :name [{:text "John"}] 
+                :birthDate "1980-10-10"
+                :gender "male"
+                }
+           }
+    :match {:by sty/matcho :status sty/ok?
+    	       :body {:resourceType "Patient" 
+    	       	      :id "pt-1"
+    	       	      :meta {:lastUpdated sty/string?
+                          :versionId sty/string?}}
+                   }}
+
+
+     {:id :read-patient
+     :desc  "Search just created patient by id"
+     :do {:act sty/http
+          :method :get
+          :url (str "/Patient?id=pt-1")}
+     :match {:by sty/matcho
+             :status sty/ok?
+             :body {
+             :entry [{:resource {:id "pt-1"}}]
+             :total 1
+             }
+            }}
+
+
+     {:desc  "Update previously created patient"
+     :do {:act sty/http :method :put
+          :url "/Patient/pt-1"
+          :body {
+                 :name [{:text "Johnny"}]
+                 :birthDate "1970-10-10"
+                 :gender "male"}
+     :match {:by sty/matcho :status sty/ok?
+    	        :body {:id "pt-1" :birthDate "1970-01-01"}}}}
+
+
+    {:desc  "Update as create"
+     :do {:act sty/http :method :put
+          :url "/Patient"
+          :body {
+                 :name [{:text "Denny"}]
+                 :birthDate "2015-10-10"
+                 :gender "female"}
+     :match {:by sty/matcho :status sty/ok?
+    	        :body {:resourceType "Patient"}}}}
+
+
+    {:desc  "Not sucessfull update previously created patient"
+     :do {:act sty/http :method :update
+          :url "/Patient/pt-1"
+          :If-Match "1212"
+          :body { :birthDate "1970-01-05"}}
+     :match {:by sty/matcho :status 409
+    	        }}
+
+    ]}}

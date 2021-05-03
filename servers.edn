@@ -2,6 +2,7 @@
  import #{sty fhir.Patient-Track.read
               fhir.Patient-Track.vread
               fhir.Patient-Track.create
+              fhir.Patient-Track.update
               fhir.Patient-Track.delete
               fhir.search
               }
