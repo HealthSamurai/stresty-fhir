@@ -48,7 +48,7 @@
     :desc  "Checking if the version of just created read resource has not changed"
     :do {:act sty/http
          :method :get
-         :If-None-Match (get-in sty/state [:create-patient :body :meta :versionId])
+         ;;:If-None-Match (get-in sty/state [:create-patient :body :meta :versionId])
          :url (str "/Patient/pt-1?_etag=" (get-in sty/state [:create-patient :body :meta :versionId]))}
     :match {:by sty/matcho
             :status 304
