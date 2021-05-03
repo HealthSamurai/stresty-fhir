@@ -50,14 +50,14 @@
     	      },
            {:resourceType "Patient" 
             :id "pt-1" 
-            :name [{:text "John"}] 
+            :name [{:text "John" :given ["Doe"]}] 
             :birthDate "1980-10-10"
             :gender "male"
             :managingOrganization {:id "org-1" :resourceType "Organization"}
            },
            {:resourceType "Patient" 
             :id "pt-2" 
-            :name [{:text "Sarah"}] 
+            :name [{:text "Sarah" :given ["Parker"]}] 
             :birthDate "2010-01-01"
             :gender "female"
             :managingOrganization {:id "org-2" :resourceType "Organization"}
@@ -129,12 +129,36 @@
     	       :body {:id sty/string?}
     	       }}
 
+
+   {:id :search_by_id
+   	:desc  "Search patients by id"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?_id=pt-1,pt-2"
+        }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+    	       :body {:entry [{:resource {:id "pt-1"}}, {:resource {:id "pt-2"}}]}
+    	       }}
+
    
    {:id :search
    	:desc  "Search a patient by name"
    	:do {:act sty/http 
    	     :method :get
-         :url "/Patient?name=John"
+         :url "/Patient?name=John Doe"
+     }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+    	       :body {:entry [{:resource {:id "pt-1"}}]}
+    	       }}
+
+
+   {:id :search
+   	:desc  "Search a patient by content"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?_content=John Doe"
      }
     :match {:by sty/matcho 
     	       :status sty/ok?
@@ -151,8 +175,20 @@
     :match {:by sty/matcho 
     	       :status sty/ok?
             :body {:entry [{:resource {:id "pt-1"}}]}}}
+
+
+   {:id :search_patient_by_last_updated
+   	:desc  "Search by last updated"
+   	:do {:act sty/http 
+   	     :method :get
+   	     :url (str "/Patient?_lastUpdated=2021" )};;(get-in sty/state [:pts :body [ :id "pt-1" :meta :lastUpdated]]))}
+
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+            :body {:entry [{:resource {:id "pt-1"}}, {:resource {:id "pt-2"}}]}}}
+
     
-   {:id :search_patient_by_age
+   {:id :search_patient_by_date_created
    	:desc  "Search yang patients"
    	:do {:act sty/http 
    	     :method :get
