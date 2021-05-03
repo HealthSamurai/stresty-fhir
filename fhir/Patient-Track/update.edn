@@ -49,13 +49,13 @@
      {:id :update-patient
      	:desc  "Update previously created patient"
       :do {:act sty/http :method :put
-           :url "/Patient/pt-1"
+           :url "/Patient?name=John"
            :body {
                  :name [{:text "Johnny"}]
                  :birthDate "1970-10-10"
                  :gender "male"}}
       :match {:by sty/matcho :status sty/ok?
-    	         :body {:id "pt-1" :birthDate "1970-01-01"}}}
+    	         :body {:id "pt-1" :birthDate "1970-10-10"}}}
 
 
     {:id :update-as-create
@@ -72,10 +72,10 @@
 
     {:id :update-non-successful
     	:desc  "Not sucessfull update previously created patient"
-     :do {:act sty/http :method :update
+     :do {:act sty/http :method :put
           :url "/Patient/pt-1"
-          :If-Match "1212"
-          :body { :birthDate "1970-01-05"}}
+          :headers {:If-Match "1212"}
+          :name [{:text "no-John"}]}
      :match {:by sty/matcho :status 409
     	        }}
 

@@ -1,0 +1,77 @@
+{ns fhir.transactions
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Transactions test case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}},
+    
+
+   
+   {:id :create-patients-in-transaction
+   	:desc  "Create patients in transaction"
+    :do {:act sty/http 
+         :method :post 
+         :type :transaction
+         :url "/"   	    
+         :body {:entry[
+                       {:request {:act sty/http :method :put :url "Patient/pt-1"}
+                       :resource {:birthDate "2021-01-01"}},
+                       {:request {:act sty/http :method :put :url "Patient/pt-2"}
+                       :resource {:birthDate "2021-01-02"}},
+                       {:request {:act sty/http :method :put :url "Patient/pt-3"}
+                       :resource {:birthDate "2021-01-03"}}]}
+    :match {:by sty/matcho 
+            :status sty/ok?
+            :body {:entry [{:resource {:id "pt-1"}}, {:resource {:id "pt-2"}},{:resource {:id "pt-3"}}]}
+             }}}
+
+
+
+    {:id :read-patient
+     :desc  "Read one of just created patients"
+     :do {:act sty/http
+          :method :get
+          :url (str "/Patient/pt-1")}
+     :match {:by sty/matcho
+             :status sty/ok?
+             :body {:id "pt-1"
+                    :resourceType "Patient"
+                    :birthDate "2021-01-01"
+                    }}}
+
+
+
+    {:id :create-multiple-versions-patient-in-transaction
+     :desc  "Create multiple versions of the patient in transaction"
+     :do {:act sty/http 
+          :method :post 
+          :type :transaction
+          :url "/"         
+          :body {:entry[
+                       {:request {:act sty/http :method :put :url "Patient/pt-1"}
+                        :resource {:birthDate "2021-01-02"}},
+                       {:request {:act sty/http :method :put :url "Patient/pt-1"}
+                        :resource {:birthDate "2021-01-03"}},
+                       {:request {:act sty/http :method :put :url "Patient/pt-1"}
+                        :resource {:birthDate "2021-01-04"}}]}
+     :match {:by sty/matcho 
+            :status sty/ok?
+            :body {:id "pt-1" :resourceType "Patient" :birthDate "2021-01-04"}}}}
+
+
+    {:id :read-patient-history
+     :desc  "Read history of a patient"
+     :do {:act sty/http
+          :method :get
+          :url "/Patient/pt-1/_history/"}
+     :match {:by sty/matcho
+             :status sty/ok?
+             :body{:type "history" :resourceType "Bundle" 
+                  }}}
+
+    ]}}
