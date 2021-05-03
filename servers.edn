@@ -3,6 +3,7 @@
               fhir.Patient-Track.vread
               fhir.Patient-Track.create
               fhir.Patient-Track.delete
+              fhir.search
               }
 
  aidbox

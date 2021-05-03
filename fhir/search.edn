@@ -1,0 +1,227 @@
+{ns fhir.search
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Search case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}}
+
+
+   {:desc "Clear all organizations"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE organization"}
+    :match {:by sty/matcho :status 200}}
+
+   
+   {:desc "Clear all practitioners"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE practitioner"}
+    :match {:by sty/matcho :status 200}}
+
+
+   {:desc "Clear all encounters"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE encounter"}
+    :match {:by sty/matcho :status 200}}
+
+   
+   {:desc "Clear all appointments"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE appointment"}
+    :match {:by sty/matcho :status 200}}
+
+
+   
+   {:id :pts
+   	:desc  "Create a set of resources for test"
+    :do {:act sty/http :method :put
+         :url "/"
+         :body [{:resourceType "Organization"
+            :name "ups"
+            :id "org-1"
+    	      },
+    	      {:resourceType "Organization"
+            :name "demo org"
+            :id "org-2"
+    	      },
+           {:resourceType "Patient" 
+            :id "pt-1" 
+            :name [{:text "John"}] 
+            :birthDate "1980-10-10"
+            :gender "male"
+            :managingOrganization {:id "org-1" :resourceType "Organization"}
+           },
+           {:resourceType "Patient" 
+            :id "pt-2" 
+            :name [{:text "Sarah"}] 
+            :birthDate "2010-01-01"
+            :gender "female"
+            :managingOrganization {:id "org-2" :resourceType "Organization"}
+           },
+           {:resourceType "Practitioner" 
+            :id "pr-1" 
+            :name [{:text "Dr. Mike"}] 
+           },
+           {:resourceType "Practitioner" 
+            :id "pr-2" 
+            :name [{:text "Dr. Phil"}] 
+           },
+           {:id "enc-1"
+            :resourceType "Encounter"
+            :class {:code "cls"}
+            :status "active"
+            :period {:start "2021-04-23"
+                     :end "2021-04-24"}
+            :subject {:id "pt-1" :resourceType "Patient"}
+            },
+            {:id "enc-2"
+            :resourceType "Encounter"
+            :class {:code "cls"}
+            :status "completed"
+            :period {:start "2019-04-20"
+                     :end "2019-04-21"}
+            :subject {:id "pt-2" :resourceType "Patient"}
+            },
+            {:resourceType "Appointment"
+                    :id "app-1"
+                    :status "pending"
+                    :participant
+                    [{:status "acepted"
+                      :actor {:id "pt-1" :resourceType "Patient"}}
+                     {:status "acepted"
+                      :actor {:id "pr-1" :resourceType "Practitioner"}}]},
+            {:resourceType "Appointment"
+                    :id "app-2"
+                    :status "finished"
+                    :participant
+                    [{:status "acepted"
+                      :actor {:id "pt-2" :resourceType "Patient"}}
+                     {:status "acepted"
+                      :actor {:id "pr-2" :resourceType "Practitioner"}}]}
+           ]}
+    :match {:by sty/matcho
+            :status sty/ok?
+                       :body [{:id "org-1"},
+                              {:id "org-2"},
+                              {:id "pt-1"},
+                              {:id "pt-2"},
+                              {:id "pr-1"},
+                              {:id "pr-2"},
+                              {:id "enc-1"},
+                              {:id "enc-2"},
+                              {:id "app-1"},
+                              {:id "app-2"}
+                              ]}}
+
+   
+   {:id :find 
+   	:desc  "Find a patient by id"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient/pt-1"
+        }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+    	       :body {:id sty/string?}
+    	       }}
+
+   
+   {:id :search
+   	:desc  "Search a patient by name"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?name=John"
+     }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+    	       :body {:entry [{:resource {:id "pt-1"}}]}
+    	       }}
+
+    
+   {:id :search_patient_by_gender
+   	:desc  "Search man among patients"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?gender=male"
+        }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+            :body {:entry [{:resource {:id "pt-1"}}]}}}
+    
+   {:id :search_patient_by_age
+   	:desc  "Search yang patients"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/fhir/Patient?_createdAt=2021"
+        }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+            :body {:entry [{:resource {:id "pt-1"}}, {:resource {:id "pt-2"}}]}}}
+
+    
+   {:id :search_for_patient_created_this_year
+   	:desc  "Return patients list created inthe current year"
+   	:do {:act sty/http 
+   	     :url "/Encounter?_include=patient"
+   	     :method :get
+   	    }
+   	:match {:by sty/matcho 
+    	       :status sty/ok?
+            :body {:entry [{:resource {:id "enc-1"}}, {:resource {:id "enc-2"}}]}}}
+
+    
+   {:id :search_for_patients_wth_enc_in_the_current_year
+   	:desc  "Search Patients with Encounters in the current year"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?_has:Encounter:subject:date:btw=2020,2021"
+        }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+            :body {:total 1}}}
+
+
+    
+   {:id :search_for_patients_wth_enc_for_past_3_years
+   	:desc  "Search Patients with Encounters in the past three years"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?_has:Encounter:subject:date:btw=2019,2021"
+        }
+    :match {:by sty/matcho 
+    	       :status sty/ok? 
+    	       :body {:total 2}}}
+
+
+    
+   {:id :search_for_appointment
+   	:desc  "Search appointments for patient pt-1"
+   	:do {:act sty/http 
+   	     :method :get
+   	     :url "/Appointment?patient=pt-1"
+   	    }
+    :match {:by sty/matcho 
+    	       :status sty/ok? 
+    	       :body {:entry [{:resource {:id "app-1"}}]}}}
+
+
+   
+    
+   {:id :search_for_encounter_include_resources
+   	:desc  "Return encounters list with patients"
+   	:do {:act sty/http 
+   	     :method :get
+   	     :url "/Encounter?_include=patient"
+   	    }
+    :match {:by sty/matcho 
+    	       :status sty/ok? 
+    	       :body {:entry [{:resource {:id "enc-1"}}, {:resource {:id "enc-2"}}]}}}
+
+
+
+   ]}
+  }
