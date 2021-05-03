@@ -1,0 +1,79 @@
+{ns fhir.FHIR4-0-1.Patient-Track.delete
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Patient delete test case"
+  :steps
+  [{:desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}},
+    
+
+   
+   {:id :create-patient
+   	:desc  "Create a patient for test"
+    :do {:act sty/http 
+    	    :method :post 
+    	    :url "/Patient"
+         :body {:resourceType "Patient" 
+                :id "pt-1" 
+                :name [{:text "John"}] 
+                :birthDate "1980-10-10"
+                :gender "male"
+                }
+           }
+    :match {:by sty/matcho :status sty/ok?
+    	       :body {:resourceType "Patient" 
+    	       	      :id "pt-1"
+    	       	      :meta {:lastUpdated sty/string?
+                          :versionId sty/string?}}
+                   }}
+
+
+     {:desc  "Delete created patient"
+   	  :do {:act sty/http :method :delete
+           :url "/Patient/pt-1"
+          }
+      :match {:by sty/matcho
+      	       :status sty/ok?
+              }}
+
+
+     {:desc  "Try to read just deleted  patient"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-1"
+          }
+      :match {:by sty/matcho
+      	       :status 410
+    	         }}
+
+
+     {:desc  "Get history for just deleted  patient"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-1/_history"
+          }
+      :match {:by sty/matcho
+      	       :status 200
+    	         :body {:entry [{:request {:method "DELETE"}, :resource {:resourceType "Patient"}}]}}}
+
+
+    	{:desc  "Not successfull conditional delete for patient"
+   	  :do {:act sty/http :method :delete
+           :url "/Patient/?birthdate=1990-01-11"
+          }
+      :match {:by sty/matcho
+      	       :status 204
+              }}
+
+
+      {:desc  "Successfull conditional delete for patient"
+   	  :do {:act sty/http :method :delete
+           :url "/Patient/?birthdate=2010-01-01"
+          }
+      :match {:by sty/matcho
+      	       :status 200
+              }}
+
+     ]}}

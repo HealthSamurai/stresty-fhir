@@ -1,7 +1,9 @@
 {ns servers
  import #{sty fhir.FHIR4-0-1.Patient-Track.read
               fhir.FHIR4-0-1.Patient-Track.vread
-              fhir.FHIR4-0-1.Patient-Track.create}
+              fhir.FHIR4-0-1.Patient-Track.create
+              fhir.FHIR4-0-1.Patient-Track.delete
+              }
 
  aidbox
  {:zen/tags #{sty/env}
