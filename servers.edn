@@ -1,8 +1,8 @@
 {ns servers
- import #{sty fhir.FHIR4-0-1.Patient-Track.read
-              fhir.FHIR4-0-1.Patient-Track.vread
-              fhir.FHIR4-0-1.Patient-Track.create
-              fhir.FHIR4-0-1.Patient-Track.delete
+ import #{sty fhir.Patient-Track.read
+              fhir.Patient-Track.vread
+              fhir.Patient-Track.create
+              fhir.Patient-Track.delete
               }
 
  aidbox

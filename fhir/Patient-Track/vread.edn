@@ -1,4 +1,4 @@
-{ns fhir.FHIR4-0-1.Patient-Track.vread
+{ns fhir.Patient-Track.vread
  import #{sty}
 
  case

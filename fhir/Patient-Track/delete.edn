@@ -1,4 +1,4 @@
-{ns fhir.FHIR4-0-1.Patient-Track.delete
+{ns fhir.Patient-Track.delete
  import #{sty}
 
  case

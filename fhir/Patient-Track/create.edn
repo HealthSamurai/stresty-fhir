@@ -1,4 +1,4 @@
-{ns fhir.FHIR4-0-1.Patient-Track.create
+{ns fhir.Patient-Track.create
  import #{sty}
 
  case
