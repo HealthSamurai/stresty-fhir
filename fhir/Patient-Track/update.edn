@@ -46,29 +46,32 @@
             }}
 
 
-     {:desc  "Update previously created patient"
-     :do {:act sty/http :method :put
-          :url "/Patient/pt-1"
-          :body {
+     {:id :update-patient
+     	:desc  "Update previously created patient"
+      :do {:act sty/http :method :put
+           :url "/Patient/pt-1"
+           :body {
                  :name [{:text "Johnny"}]
                  :birthDate "1970-10-10"
-                 :gender "male"}
-     :match {:by sty/matcho :status sty/ok?
-    	        :body {:id "pt-1" :birthDate "1970-01-01"}}}}
+                 :gender "male"}}
+      :match {:by sty/matcho :status sty/ok?
+    	         :body {:id "pt-1" :birthDate "1970-01-01"}}}
 
 
-    {:desc  "Update as create"
+    {:id :update-as-create
+    	:desc  "Update as create"
      :do {:act sty/http :method :put
           :url "/Patient"
           :body {
                  :name [{:text "Denny"}]
                  :birthDate "2015-10-10"
-                 :gender "female"}
+                 :gender "female"}}
      :match {:by sty/matcho :status sty/ok?
-    	        :body {:resourceType "Patient"}}}}
+    	        :body {:resourceType "Patient"}}}
 
 
-    {:desc  "Not sucessfull update previously created patient"
+    {:id :update-non-successful
+    	:desc  "Not sucessfull update previously created patient"
      :do {:act sty/http :method :update
           :url "/Patient/pt-1"
           :If-Match "1212"

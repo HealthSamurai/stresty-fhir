@@ -4,6 +4,7 @@
               fhir.Patient-Track.create
               fhir.Patient-Track.update
               fhir.Patient-Track.delete
+              fhir.capabilities
               fhir.search
               }
 

@@ -1,0 +1,19 @@
+{ns fhir.capabilities
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Capabilities statement testing"
+  :steps
+  [{:id :metadata
+    :do {:act sty/http
+         :method :get
+         :url "/metadata"}
+    :match {:by sty/matcho
+            :status 200 
+            :body {:resourceType "CapabilityStatement"}
+            }}
+
+
+
+   ]}}
