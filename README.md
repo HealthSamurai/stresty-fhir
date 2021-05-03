@@ -49,15 +49,40 @@ Follow this [instruction](https://www.macworld.co.uk/how-to/mac-app-unidentified
 ## sty utility usage
 
 ``` bash
-sty --path=PATH <command> <subcommand>
+sty test | gen | server | check | help
 
-sty server -p PORT
+------------------------------------------------------
+sty test [tag=<string,string>] [case=<string,string>] [ns=us-core.patient,us-core.encounter] [env=servers/aidbox]
+ run tests
+ params:
+  tag=<string,string> - tags list, run only cases and envs with this tags
+  case=<string,string>  - cases list, run only listed cases
+  ns=us-core.patient,us-core.encounter  - namespaces list, run tests from this list
+  env=servers/aidbox  - envs list, run specific enviroments
 
-sty tests --envs=ENV1,ENV2 --cases=CS,CS  --steps=STEP,STEP --tags=TAG,TAG
+-------------------------------------------------
+sty gen [project=my.project]
+ generate project and cases
+ params:
+  project=my.project  - name of project
 
-sty watch --paths=PATH1,PATH2
+-------------------------------------------------
+sty server [port=8080]
+ run server with ui
+ params:
+  port=8080 - Port to start server
 
-sty (help) => help
+-------------------------------------------------
+sty check [ns=us-core.patient,us-core,encounter]
+ check syntax of test project
+ params:
+  ns=us-core.patient,us-core,encounter  - Namespaces to check
+
+-------------------------------------------------
+sty help
+ stresty help
+ params:
+
 ```
 
 ## Working with environments for running test cases
@@ -152,6 +177,6 @@ any?
 ## Runing tests
 
 ```
-sty --ns=envs tests
+sty --ns=envs test
 
 ```
