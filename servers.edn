@@ -1,5 +1,6 @@
 {ns servers
- import #{sty fhir.patient-track fhir.patient}
+ import #{sty fhir.FHIR4-0-1.Patient-Track.read,
+              fhir.FHIR4-0-1.Patient-Track.vread}
 
  aidbox
  {:zen/tags #{sty/env}

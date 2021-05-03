@@ -60,4 +60,22 @@
       	       :status 404
     	         }}
 
+
+    	  {:desc  "Delete created patient"
+   	  :do {:act sty/http :method :delete
+           :url "/Patient/pt-1"
+          }
+      :match {:by sty/matcho
+      	       :status sty/ok?
+              }}
+
+
+     {:desc  "Get history for just deleted  patient"
+      :do {:act sty/http :method :get
+           :url "/Patient/pt-1/_history"
+          }
+      :match {:by sty/matcho
+      	       :status 200
+    	         :body {:entry [{:request {:method "DELETE"}, :resource {:resourceType "Patient"}}]}}}
+
 ]}}
