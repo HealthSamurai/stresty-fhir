@@ -12,24 +12,26 @@
     
 
    
-   {:id :create-patient
-   	:desc  "Create a patient for test"
-    :do {:act sty/http 
-    	    :method :post 
-    	    :url "/Patient"
-         :body {:resourceType "Patient" 
-                :id "pt-1" 
-                :name [{:text "John"}] 
+  {:desc  "Create two patients for test"
+   :do {:act sty/http :method :put :url "/"
+        :body [{:resourceType "Patient"
+                :id "pt-1"
+                :name [{:text "John"}]
                 :birthDate "1980-10-10"
                 :gender "male"
-                }
+                :meta {:versionId "999"}
+               },
+               {:resourceType "Patient"
+                :id "pt-2"
+                :name [{:text "Sarah"}]
+                :birthDate "2010-01-01"
+                :gender "female"
+                :meta {:versionId "1000"}
+               }]
            }
     :match {:by sty/matcho :status sty/ok?
-    	       :body {:resourceType "Patient" 
-    	       	      :id "pt-1"
-    	       	      :meta {:lastUpdated sty/string?
-                          :versionId sty/string?}}
-                   }}
+    	       :body [{:id "pt-1"},
+                   {:id "pt-2"}]}}
 
 
      {:desc  "Delete created patient"
