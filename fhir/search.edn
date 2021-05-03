@@ -57,7 +57,7 @@
            },
            {:resourceType "Patient" 
             :id "pt-2" 
-            :name [{:text "Sarah" :given ["Parker"]}] 
+            :name [{:text "Sarah"}] 
             :birthDate "2010-01-01"
             :gender "female"
             :managingOrganization {:id "org-2" :resourceType "Organization"}
@@ -130,7 +130,7 @@
     	       }}
 
 
-   {:id :search_by_id
+   {:id :search-by-id
    	:desc  "Search patients by id"
    	:do {:act sty/http 
    	     :method :get
@@ -142,7 +142,7 @@
     	       }}
 
    
-   {:id :search
+   {:id :search-by-name
    	:desc  "Search a patient by name"
    	:do {:act sty/http 
    	     :method :get
@@ -154,11 +154,23 @@
     	       }}
 
 
-   {:id :search
+   {:id :search-by-content
    	:desc  "Search a patient by content"
    	:do {:act sty/http 
    	     :method :get
          :url "/Patient?_content=John Doe"
+     }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+    	       :body {:entry [{:resource {:id "pt-1"}}]}
+    	       }}
+
+
+    {:id :search-by-text
+   	:desc  "Search a patient by elements"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?_elements=birthDate,name.given"
      }
     :match {:by sty/matcho 
     	       :status sty/ok?
@@ -177,6 +189,17 @@
             :body {:entry [{:resource {:id "pt-1"}}]}}}
 
 
+   {:id :search_patient_by_not_gender
+   	:desc  "Search not man among patients"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?gender:not=male"
+        }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+            :body {:entry [{:resource {:id "pt-2"}}]}}}
+
+
    {:id :search_patient_by_last_updated
    	:desc  "Search by last updated"
    	:do {:act sty/http 
@@ -186,6 +209,20 @@
     :match {:by sty/matcho 
     	       :status sty/ok?
             :body {:entry [{:resource {:id "pt-1"}}, {:resource {:id "pt-2"}}]}}}
+
+
+
+   {:id :search-by-missing-given-name
+   	:desc  "Search a patient by missing"
+   	:do {:act sty/http 
+   	     :method :get
+         :url "/Patient?address:missing=true"
+     }
+    :match {:by sty/matcho 
+    	       :status sty/ok?
+    	       :body {:entry [{:resource {:id "pt-1"}}, {:resource {:id "pt-2"}}]}
+    	       }}
+
 
     
    {:id :search_patient_by_date_created
@@ -256,6 +293,18 @@
     :match {:by sty/matcho 
     	       :status sty/ok? 
     	       :body {:entry [{:resource {:id "enc-1"}}, {:resource {:id "enc-2"}}]}}}
+
+
+
+   {:id :search_revinclude
+   	:desc  "Return patients list with encounters"
+   	:do {:act sty/http 
+   	     :method :get
+   	     :url "/Patient?_revinclude=Encounter:subject:Patient"
+   	    }
+    :match {:by sty/matcho 
+    	       :status sty/ok? 
+    	       :body {:entry [{:resource {:id "pt-1"}}, {:resource {:id "pt-2"}}]}}}
 
 
 
