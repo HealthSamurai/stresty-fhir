@@ -41,11 +41,6 @@ Generating the new project
 sty gen --project=mytest   //mytest - is a name of the namespace
 ```
 
-MAC OS
-
-Follow this [instruction](https://www.macworld.co.uk/how-to/mac-app-unidentified-developer-3669596/#:~:text=Open%20System%20Preferences.,developers'%20from%20just%20App%20Store) to handle System restrictions for the apps from unidentified developers.
-
-
 ## sty utility usage
 
 ``` bash
