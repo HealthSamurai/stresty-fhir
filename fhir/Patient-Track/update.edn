@@ -71,12 +71,13 @@
 
 
     {:id :update-non-successful
-    	:desc  "Not sucessfull update previously created patient"
+    	:desc  "Versioned update"
      :do {:act sty/http :method :put
           :url "/Patient/pt-1"
-          :headers {:If-Match "1212"}
-          :name [{:text "no-John"}]}
-     :match {:by sty/matcho :status 409
+          :headers {:If-Match (get-in sty/state [:update-patient :body :meta :versionId])}
+          :body {
+                 :name [{:text "no-John"}]}}
+     :match {:by sty/matcho :status sty/ok?
     	        }}
 
     ]}}

@@ -16,19 +16,19 @@
    	:desc  "Create patients in transaction"
     :do {:act sty/http 
          :method :post 
-         :type :transaction
          :url "/"   	    
-         :body {:entry[
+         :body {:type :transaction
+         	      :entry[
                        {:request {:act sty/http :method :put :url "Patient/pt-1"}
                        :resource {:birthDate "2021-01-01"}},
                        {:request {:act sty/http :method :put :url "Patient/pt-2"}
                        :resource {:birthDate "2021-01-02"}},
                        {:request {:act sty/http :method :put :url "Patient/pt-3"}
-                       :resource {:birthDate "2021-01-03"}}]}
+                       :resource {:birthDate "2021-01-03"}}]}}
     :match {:by sty/matcho 
             :status sty/ok?
             :body {:entry [{:resource {:id "pt-1"}}, {:resource {:id "pt-2"}},{:resource {:id "pt-3"}}]}
-             }}}
+             }}
 
 
 
@@ -50,18 +50,20 @@
      :desc  "Create multiple versions of the patient in transaction"
      :do {:act sty/http 
           :method :post 
-          :type :transaction
           :url "/"         
-          :body {:entry[
+          :body {:type :transaction
+          	      :entry[
                        {:request {:act sty/http :method :put :url "Patient/pt-1"}
                         :resource {:birthDate "2021-01-02"}},
                        {:request {:act sty/http :method :put :url "Patient/pt-1"}
                         :resource {:birthDate "2021-01-03"}},
                        {:request {:act sty/http :method :put :url "Patient/pt-1"}
-                        :resource {:birthDate "2021-01-04"}}]}
+                        :resource {:birthDate "2021-01-04"}}]}}
      :match {:by sty/matcho 
             :status sty/ok?
-            :body {:id "pt-1" :resourceType "Patient" :birthDate "2021-01-04"}}}}
+            :body {:entry [{:resource {:id "pt-1" :resourceType "Patient" :birthDate "2021-01-02"}},
+            	              {:resource {:id "pt-1" :resourceType "Patient" :birthDate "2021-01-03"}},
+            	              {:resource {:id "pt-1" :resourceType "Patient" :birthDate "2021-01-04"}}]}}}
 
 
     {:id :read-patient-history
