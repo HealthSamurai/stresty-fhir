@@ -17,7 +17,7 @@ jobs:
         run: 7z x sty.zip
 
       - name: Test stresty
-        run:  ./sty --format=report --ns=servers test
+        run:  ./sty ns:servers test report:html output:output/index.html
 
       - name: Deploy to GitHub Pages
         if: success()
