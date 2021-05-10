@@ -1,0 +1,73 @@
+{ns fhir.Patient-Track.patch
+ import #{sty}
+
+ case
+ {:zen/tags #{sty/case}
+  :title "Patient patch test case"
+  :steps
+  [{:id :clear-patients
+  	 :desc "Clear all patients"
+    :do {:act sty/http :method :post :url "/$sql"
+         :body "TRUNCATE patient"}
+    :match {:by sty/matcho :status 200}},
+    
+
+   
+   {:id :create-patient
+   	:desc  "Create a patient for test"
+    :do {:act sty/http 
+    	    :method :post 
+    	    :url "/Patient"
+         :body {:resourceType "Patient" 
+                :active true
+                :birthDate "1980-10-10"
+                :gender "male"   
+                :name [{:given ["John"] :family "Doe" :use :official},{:given ["Johnny"] :family "Dowson" :use :home}]            
+                }
+           }
+    :match {:by sty/matcho :status sty/ok?
+    	       :body {:resourceType "Patient" 
+    	       	      :id sty/string?
+    	       	      :meta {:lastUpdated sty/string?
+                          :versionId sty/string?}}
+                   }}
+
+
+   {:id :patch-merge
+   	:desc "Merge patch created patient"
+   	:do{:act sty/http 
+    	   :method :patch 
+    	   :url (str (str "/Patient/" (get-in sty/state [:create-patient :body :id])) "?_method=merge-patch")
+    	   :body{:active false
+    	   	     :gender "female"
+    	   }
+
+   	}
+   	:match{:by sty/matcho :status sty/ok?}
+
+   }
+
+   {:id :patch-JSON
+   	:desc "Advances JSON patch "
+   	:do{:act sty/http 
+    	   :method :patch 
+    	   :url (str "/Patient/" (get-in sty/state [:create-patient :body :id])) 
+    	   :body[ {:op "add"
+                :path "/name/0/given/1"
+                :value "Pavel"},
+    	          {:op "replace"
+                :path "/name/0/given/0"
+                :value "Nikolai"},
+               {:op "remove"
+                :path "/name/1"},
+               {:op "replace"
+                :path "/active"
+                :value true}]
+
+   	}
+   	:match{:by sty/matcho :status sty/ok?}
+
+   }
+
+
+  ]}}
