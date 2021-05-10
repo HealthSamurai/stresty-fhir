@@ -5,7 +5,8 @@
  {:zen/tags #{sty/case}
   :title "Patient read test case"
   :steps
-  [{:desc "Clear all patients"
+  [{:id :clear-patients
+  	 :desc "Clear all patients"
     :do {:act sty/http :method :post :url "/$sql"
          :body "TRUNCATE patient"}
     :match {:by sty/matcho :status 200}},
@@ -30,17 +31,17 @@
                    }}
 
 
-    {:id :read-patient
-     :desc  "Read patient"
-     :do {:act sty/http
-          :method :get
-          :url (str "/Patient/" (get-in sty/state [:create-patient :body :id]))}
-     :match {:by sty/matcho
-             :status sty/ok?
-             :body {:id (get-in sty/state [:create-patient :body :id])
-                    :resourceType "Patient"
-                    :meta {:lastUpdated sty/string?
-                           :versionId sty/string?}}}}
+   {:id :read-patient
+    :desc  "Read patient"
+    :do {:act sty/http
+         :method :get
+         :url (str "/Patient/" (get-in sty/state [:create-patient :body :id]))}
+    :match {:by sty/matcho
+            :status sty/ok?
+            :body {:id (get-in sty/state [:create-patient :body :id])
+                   :resourceType "Patient"
+                   :meta {:lastUpdated sty/string?
+                          :versionId sty/string?}}}}
 
 
   ;;  {:id :read-patient-conditional-not-modified
@@ -55,32 +56,34 @@
   ;;           }}
 
 
-    {:id :read-patient-not-found
-     :desc  "Try to read not existing patient"
-     :do {:act sty/http
-          :method :get
-          :url (str "/Patient/pt-3")}
-     :match {:by sty/matcho
-             :status 404
-             }}
+   {:id :read-patient-not-found
+    :desc  "Try to read not existing patient"
+    :do {:act sty/http
+         :method :get
+         :url (str "/Patient/pt-3")}
+    :match {:by sty/matcho
+            :status 404
+            }}
 
 
-     {:desc  "Delete created patient"
-   	  :do {:act sty/http :method :delete
-           :url (str "/Patient/" (get-in sty/state [:create-patient :body :id]))
-          }
-      :match {:by sty/matcho 
-      	       :status sty/ok? 
-              }}
+   {:id :delete-patient
+   	:desc  "Delete created patient"
+    :do {:act sty/http :method :delete
+         :url (str "/Patient/" (get-in sty/state [:create-patient :body :id]))
+        }
+    :match {:by sty/matcho 
+      	     :status sty/ok? 
+           }}
 
 
-     {:desc  "Try to read just deleted  patient"
-      :do {:act sty/http :method :get
-           :url (str "/Patient/" (get-in sty/state [:create-patient :body :id]))
-          }
-      :match {:by sty/matcho 
-      	       :status 410 
-    	         }}
+   {:id :read-deleted-patient
+    :desc  "Try to read just deleted  patient"
+    :do {:act sty/http :method :get
+         :url (str "/Patient/" (get-in sty/state [:create-patient :body :id]))
+        }
+    :match {:by sty/matcho 
+      	     :status 410 
+    	      }}
 
 ]}}
 

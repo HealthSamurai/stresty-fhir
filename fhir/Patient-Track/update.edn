@@ -5,7 +5,8 @@
  {:zen/tags #{sty/case}
   :title "Patient update test case"
   :steps
-  [{:desc "Clear all patients"
+  [{:id :clear-patients
+  	 :desc "Clear all patients"
     :do {:act sty/http :method :post :url "/$sql"
          :body "TRUNCATE patient"}
     :match {:by sty/matcho :status 200}},
@@ -18,7 +19,6 @@
     	    :method :post 
     	    :url "/Patient"
          :body {:resourceType "Patient" 
-                :id "pt-1" 
                 :name [{:text "John"}] 
                 :birthDate "1980-10-10"
                 :gender "male"
@@ -26,58 +26,57 @@
            }
     :match {:by sty/matcho :status sty/ok?
     	       :body {:resourceType "Patient" 
-    	       	      :id "pt-1"
+    	       	      :id sty/string?
     	       	      :meta {:lastUpdated sty/string?
                           :versionId sty/string?}}
                    }}
 
 
-     {:id :read-patient
-     :desc  "Search just created patient by id"
-     :do {:act sty/http
-          :method :get
-          :url (str "/Patient?id=pt-1")}
-     :match {:by sty/matcho
-             :status sty/ok?
-             :body {
-             :entry [{:resource {:id "pt-1"}}]
-             :total 1
-             }
-            }}
+   {:id :read-patient
+    :desc  "Read patient"
+    :do {:act sty/http
+         :method :get
+         :url (str "/Patient/" (get-in sty/state [:create-patient :body :id]))}
+    :match {:by sty/matcho
+            :status sty/ok?
+            :body {:id (get-in sty/state [:create-patient :body :id])
+                   :resourceType "Patient"
+                   :meta {:lastUpdated sty/string?
+                          :versionId sty/string?}}}}
 
 
-     {:id :update-patient
-     	:desc  "Update previously created patient"
-      :do {:act sty/http :method :put
-           :url "/Patient?name=John"
-           :body {
-                 :name [{:text "Johnny"}]
-                 :birthDate "1970-10-10"
-                 :gender "male"}}
-      :match {:by sty/matcho :status sty/ok?
-    	         :body {:id "pt-1" :birthDate "1970-10-10"}}}
+   {:id :update-patient
+    :desc  "Update previously created patient"
+    :do {:act sty/http :method :put
+         :url "/Patient?name=John"
+         :body {
+                :name [{:text "Johnny"}]
+                :birthDate "1970-10-10"
+                :gender "male"}}
+    :match {:by sty/matcho :status sty/ok?
+    	       :body {:id (get-in sty/state [:create-patient :body :id]) :birthDate "1970-10-10"}}}
 
 
-    {:id :update-as-create
-    	:desc  "Update as create"
-     :do {:act sty/http :method :put
-          :url "/Patient"
-          :body {
-                 :name [{:text "Denny"}]
-                 :birthDate "2015-10-10"
-                 :gender "female"}}
-     :match {:by sty/matcho :status sty/ok?
+   {:id :update-as-create
+    :desc  "Update as create"
+    :do {:act sty/http :method :put
+         :url "/Patient"
+         :body {
+                :name [{:text "Denny"}]
+                :birthDate "2015-10-10"
+                :gender "female"}}
+    :match {:by sty/matcho :status sty/ok?
     	        :body {:resourceType "Patient"}}}
 
 
-    {:id :update-non-successful
-    	:desc  "Versioned update"
-     :do {:act sty/http :method :put
-          :url "/Patient/pt-1"
-          :headers {:If-Match (get-in sty/state [:update-patient :body :meta :versionId])}
-          :body {
-                 :name [{:text "no-John"}]}}
-     :match {:by sty/matcho :status sty/ok?
-    	        }}
+   {:id :update-non-successful
+    :desc  "Versioned update"
+    :do {:act sty/http :method :put
+         :url (str "/Patient/" (get-in sty/state [:create-patient :body :id]))
+         :headers {:If-Match (get-in sty/state [:update-patient :body :meta :versionId])}
+         :body {
+                :name [{:text "no-John"}]}}
+    :match {:by sty/matcho :status sty/ok?
+    	       }}
 
     ]}}

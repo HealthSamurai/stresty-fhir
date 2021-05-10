@@ -5,38 +5,43 @@
  {:zen/tags #{sty/case}
   :title "Search case"
   :steps
-  [{:desc "Clear all patients"
+  [{:id :clear-patients
+  	 :desc "Clear all patients"
     :do {:act sty/http :method :post :url "/$sql"
          :body "TRUNCATE patient"}
-    :match {:by sty/matcho :status 200}}
+    :match {:by sty/matcho :status sty/ok?}}
 
 
-   {:desc "Clear all organizations"
+   {:id :clear-organizations
+   	:desc "Clear all organizations"
     :do {:act sty/http :method :post :url "/$sql"
          :body "TRUNCATE organization"}
-    :match {:by sty/matcho :status 200}}
+    :match {:by sty/matcho :status sty/ok?}}
 
    
-   {:desc "Clear all practitioners"
+   {:id :clear-practitioners
+   	:desc "Clear all practitioners"
     :do {:act sty/http :method :post :url "/$sql"
          :body "TRUNCATE practitioner"}
-    :match {:by sty/matcho :status 200}}
+    :match {:by sty/matcho :status sty/ok?}}
 
 
-   {:desc "Clear all encounters"
+   {:id :clear-encounters
+   	:desc "Clear all encounters"
     :do {:act sty/http :method :post :url "/$sql"
          :body "TRUNCATE encounter"}
-    :match {:by sty/matcho :status 200}}
+    :match {:by sty/matcho :status sty/ok?}}
 
    
-   {:desc "Clear all appointments"
+   {:id :clear-appointments
+   	:desc "Clear all appointments"
     :do {:act sty/http :method :post :url "/$sql"
          :body "TRUNCATE appointment"}
-    :match {:by sty/matcho :status 200}}
+    :match {:by sty/matcho :status sty/ok?}}
 
 
    
-   {:id :pts
+   {:id :create-resources
    	:desc  "Create a set of resources for test"
     :do {:act sty/http :method :put
          :url "/"
